@@ -43,13 +43,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nationfinal.R
 import com.example.nationfinal.Routes
 import com.example.nationfinal.ui.theme.NationFinalTheme
-import com.example.nationfinal.viewmodel.CardViewModel
 import com.example.nationfinal.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
-    val viewModel2: CardViewModel = viewModel()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -83,7 +81,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
             )
             {
                 Button(
-                    onClick = {navController.navigate(Routes.Search.route)},
+                    onClick = { navController.navigate(Routes.Search.route) },
                     Modifier
                         .height(52.dp)
                         .width(277.dp),
@@ -95,8 +93,16 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         defaultElevation = 5.dp
                     )
                 ) {
-                    Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Outlined.Search, contentDescription = "search", tint = Color(0xFF6a6a6a))
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Outlined.Search,
+                            contentDescription = "search",
+                            tint = Color(0xFF6a6a6a)
+                        )
                         Spacer(Modifier.padding(horizontal = 7.dp))
                         Text("Поиск", color = Color(0xFF6a6a6a))
                     }
@@ -161,7 +167,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = Color(0xFF47ABDE))
                     }
                 } else {
                     LazyRow {
@@ -174,12 +180,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                         CardSneakers(
                                             image = item,
                                             onClick = {
-                                                viewModel2.id = item.id
-                                                viewModel2.delete()
+                                                viewModel.id = item.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-                                                viewModel2.id = item.id
-                                                viewModel2.update()
+                                                viewModel.id = item.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.addbutton
@@ -190,12 +196,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                         CardSneakers(
                                             image = item,
                                             onClick = {
-                                                viewModel2.id = item.id
-                                                viewModel2.delete()
+                                                viewModel.id = item.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-                                                viewModel2.id = item.id
-                                                viewModel2.insert()
+                                                viewModel.id = item.id
+                                                viewModel.insert()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.bucket
@@ -208,12 +214,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                         CardSneakers(
                                             image = item,
                                             onClick = {
-                                                viewModel2.id = item.id
-                                                viewModel2.insert2_0()
+                                                viewModel.id = item.id
+                                                viewModel.insert2_0()
                                             },
                                             onBucket = {
-                                                viewModel2.id = item.id
-                                                viewModel2.update()
+                                                viewModel.id = item.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.addbutton
@@ -224,12 +230,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                         CardSneakers(
                                             image = item,
                                             onClick = {
-                                                viewModel2.id = item.id
-                                                viewModel2.insert2_0()
+                                                viewModel.id = item.id
+                                                viewModel.insert2_0()
                                             },
                                             onBucket = {
-                                                viewModel2.id= item.id
-                                                viewModel2.insert()
+                                                viewModel.id = item.id
+                                                viewModel.insert()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.bucket

@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
+import coil.compose.AsyncImage
 import com.example.nationfinal.R
 import com.example.nationfinal.model.PopularSneakers
 import com.example.nationfinal.ui.theme.NationFinalTheme

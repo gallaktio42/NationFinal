@@ -39,16 +39,6 @@ import com.example.nationfinal.viewmodel.PopularViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PopularScreen(navController: NavController, viewModel: PopularViewModel = viewModel()) {
-    val viewModel2: CardViewModel = viewModel()
-    val viewModel3: HomeViewModel = viewModel()
-    val context = LocalContext.current
-    LaunchedEffect(true) {
-        try {
-            viewModel.data = viewModel.getDataPopular()
-        } catch (e: Exception) {
-            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-        }
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -85,19 +75,19 @@ fun PopularScreen(navController: NavController, viewModel: PopularViewModel = vi
                     ) {
                         item.forEach { it3 ->
                             val fav =
-                                viewModel3.dataFavorite.find { it.idSneaker == it3.id }
-                            val bucket = viewModel3.dataBucket.find { it.idSneaker == it3.id }
+                                viewModel.dataFavorite.find { it.idSneaker == it3.id }
+                            val bucket = viewModel.dataBucket.find { it.idSneaker == it3.id }
                             if (fav != null) {
                                 if (bucket != null) {
                                     CardSneakers(
                                         image = it3,
                                         onClick = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.delete()
+                                            viewModel.id = it3.id
+                                            viewModel.delete()
                                         },
                                         onBucket = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.update()
+                                            viewModel.id = it3.id
+                                            viewModel.update()
                                         },
                                         icon = R.drawable.iconheart,
                                         buck = R.drawable.addbutton
@@ -107,12 +97,12 @@ fun PopularScreen(navController: NavController, viewModel: PopularViewModel = vi
                                     CardSneakers(
                                         image = it3,
                                         onClick = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.delete()
+                                            viewModel.id = it3.id
+                                            viewModel.delete()
                                         },
                                         onBucket = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.insert()
+                                            viewModel.id = it3.id
+                                            viewModel.insert()
                                         },
                                         icon = R.drawable.iconheart,
                                         buck = R.drawable.bucket
@@ -124,12 +114,12 @@ fun PopularScreen(navController: NavController, viewModel: PopularViewModel = vi
                                     CardSneakers(
                                         image = it3,
                                         onClick = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.insert2_0()
+                                            viewModel.id = it3.id
+                                            viewModel.insert2_0()
                                         },
                                         onBucket = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.update()
+                                            viewModel.id = it3.id
+                                            viewModel.update()
                                         },
                                         icon = R.drawable.icon_heart,
                                         buck = R.drawable.addbutton
@@ -139,12 +129,12 @@ fun PopularScreen(navController: NavController, viewModel: PopularViewModel = vi
                                     CardSneakers(
                                         image = it3,
                                         onClick = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.insert2_0()
+                                            viewModel.id = it3.id
+                                            viewModel.insert2_0()
                                         },
                                         onBucket = {
-                                            viewModel2.id = it3.id
-                                            viewModel2.insert()
+                                            viewModel.id = it3.id
+                                            viewModel.insert()
                                         },
                                         icon = R.drawable.icon_heart,
                                         buck = R.drawable.bucket

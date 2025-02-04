@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             NationFinalTheme {
                 val navController = rememberNavController()
-                NavHost(navController, startDestination = Routes.Home.route){
+                NavHost(navController, startDestination = Routes.SignIn.route){
                     composable(Routes.SignIn.route) { SignInScreen(navController = navController) }
                     composable(Routes.SignUp.route) { SignUpScreen(navController = navController) }
                     composable(Routes.ForgotPass.route) { ForgotPasswordScreen(navController = navController) }

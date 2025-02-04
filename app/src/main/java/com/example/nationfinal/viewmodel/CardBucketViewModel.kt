@@ -18,7 +18,11 @@ class CardBucketViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            data = getData()
+            try {
+                data = getData()
+            }catch (e: Exception){
+                throw e
+            }
         }
     }
 
@@ -89,7 +93,7 @@ class CardBucketViewModel : ViewModel() {
             val bucket = supabase.from("Bucket")
                 .select() {
                     filter {
-                        Bucket::uuid eq uuid!!.first().userId
+                        Bucket::uuid eq uuid?.first()?.userId
                     }
                 }.decodeList<Bucket>()
             return bucket

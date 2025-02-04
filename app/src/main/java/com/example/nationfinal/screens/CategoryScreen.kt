@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,7 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,15 +45,15 @@ import com.example.nationfinal.Routes
 import com.example.nationfinal.model.PopularSneakers
 import com.example.nationfinal.ui.theme.NationFinalTheme
 import com.example.nationfinal.viewmodel.CardViewModel
+import com.example.nationfinal.viewmodel.CategoryViewModel
 import com.example.nationfinal.viewmodel.HomeViewModel
 import okhttp3.internal.notifyAll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
-    navController: NavController, category: String, viewModel: HomeViewModel = viewModel()
+    navController: NavController, category: String, viewModel: CategoryViewModel = viewModel()
 ) {
-    val viewModel2: CardViewModel = viewModel()
     var selectedCategory by rememberSaveable { mutableStateOf(category) }
     val filtered = viewModel.dataAll.filter { it.category == selectedCategory }
     Scaffold(
@@ -97,167 +100,172 @@ fun CategoryScreen(
             }
             Spacer(Modifier.height(15.dp))
             Column(Modifier.fillMaxWidth()) {
-                if (selectedCategory == "All") {
-                    LazyColumn {
-                        items(viewModel.dataAll.chunked(2)) { pair ->
-                            Row(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 20.dp)
-                            ) {
-                                pair.forEach { item ->
-                                    val fav =
-                                        viewModel.dataFavorite.find { it.idSneaker == item.id }
-                                    val bucket =
-                                        viewModel.dataBucket.find { it.idSneaker == item.id }
-                                    if (fav != null) {
-                                        if (bucket != null) {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.delete()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.update()
-                                                },
-                                                icon = R.drawable.iconheart,
-                                                buck = R.drawable.addbutton
-                                            )
-                                            Spacer(Modifier.width(20.dp)) // Отступ между элементами
-                                        } else {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.delete()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert()
-                                                },
-                                                icon = R.drawable.iconheart,
-                                                buck = R.drawable.bucket
-                                            )
-                                            Spacer(Modifier.width(20.dp))
-                                        }
-                                    } else {
-                                        if (bucket != null) {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert2_0()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.update()
-                                                },
-                                                icon = R.drawable.icon_heart,
-                                                buck = R.drawable.addbutton
-                                            )
-                                            Spacer(Modifier.width(20.dp))
-                                        } else {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert2_0()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert()
-                                                },
-                                                icon = R.drawable.icon_heart,
-                                                buck = R.drawable.bucket
-                                            )
-                                            Spacer(Modifier.width(20.dp))
-                                        }
-                                    }
-                                }
-                            }
-                            Spacer(Modifier.padding(vertical = 8.dp)) // Отступ между строками
-                        }
+                if (viewModel.dataAll.isEmpty()) {
+                    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(color = Color(0xFF47ABDE))
                     }
-                } else if (filtered.isEmpty()) {
-                    Text(
-                        "Empty", Modifier.fillMaxWidth(), textAlign = TextAlign.Center
-                    )
                 } else {
-                    LazyColumn {
-                        items(filtered.chunked(2)) { pair ->
-                            Row(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 20.dp)
-                            ) {
-                                pair.forEach { item ->
-                                    val fav =
-                                        viewModel.dataFavorite.find { it.idSneaker == item.id }
-                                    val bucket =
-                                        viewModel.dataBucket.find { it.idSneaker == item.id }
-                                    if (fav != null) {
-                                        if (bucket != null) {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.delete()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.update()
-                                                },
-                                                icon = R.drawable.iconheart,
-                                                buck = R.drawable.addbutton
-                                            )
-                                            Spacer(Modifier.width(20.dp)) // Отступ между элементами
-                                        }
-                                        else{
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.delete()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert()
-                                                },
-                                                icon = R.drawable.iconheart,
-                                                buck = R.drawable.bucket
-                                            )
-                                            Spacer(Modifier.width(20.dp))
-                                        }
-                                    } else {
-                                        if (bucket !=null) {
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert2_0()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.update()
-                                                },
-                                                icon = R.drawable.icon_heart,
-                                                buck = R.drawable.addbutton
-                                            )
-                                            Spacer(Modifier.width(20.dp)) // Отступ между элементами
-                                        }else{
-                                            CardSneakers(
-                                                image = item, onClick = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert2_0()
-                                                },
-                                                onBucket = {
-                                                    viewModel2.id = item.id
-                                                    viewModel2.insert()
-                                                },
-                                                icon = R.drawable.icon_heart,
-                                                buck = R.drawable.bucket
-                                            )
-                                            Spacer(Modifier.width(20.dp))
+                    if (selectedCategory == "All") {
+                        LazyColumn {
+                            items(viewModel.dataAll.chunked(2)) { pair ->
+                                Row(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 20.dp)
+                                ) {
+                                    pair.forEach { item ->
+                                        val fav =
+                                            viewModel.dataFavorite.find { it.idSneaker == item.id }
+                                        val bucket =
+                                            viewModel.dataBucket.find { it.idSneaker == item.id }
+                                        if (fav != null) {
+                                            if (bucket != null) {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.delete()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.update()
+                                                    },
+                                                    icon = R.drawable.iconheart,
+                                                    buck = R.drawable.addbutton
+                                                )
+                                                Spacer(Modifier.width(20.dp)) // Отступ между элементами
+                                            } else {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.delete()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert()
+                                                    },
+                                                    icon = R.drawable.iconheart,
+                                                    buck = R.drawable.bucket
+                                                )
+                                                Spacer(Modifier.width(20.dp))
+                                            }
+                                        } else {
+                                            if (bucket != null) {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert2_0()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.update()
+                                                    },
+                                                    icon = R.drawable.icon_heart,
+                                                    buck = R.drawable.addbutton
+                                                )
+                                                Spacer(Modifier.width(20.dp))
+                                            } else {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert2_0()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert()
+                                                    },
+                                                    icon = R.drawable.icon_heart,
+                                                    buck = R.drawable.bucket
+                                                )
+                                                Spacer(Modifier.width(20.dp))
+                                            }
                                         }
                                     }
                                 }
+                                Spacer(Modifier.padding(vertical = 8.dp)) // Отступ между строками
                             }
-                            Spacer(Modifier.padding(vertical = 8.dp)) // Отступ между строками
+                        }
+                    } else if (filtered.isEmpty()) {
+                        Text(
+                            "Empty", Modifier.fillMaxWidth(), textAlign = TextAlign.Center
+                        )
+                    } else {
+                        LazyColumn {
+                            items(filtered.chunked(2)) { pair ->
+                                Row(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 20.dp)
+                                ) {
+                                    pair.forEach { item ->
+                                        val fav =
+                                            viewModel.dataFavorite.find { it.idSneaker == item.id }
+                                        val bucket =
+                                            viewModel.dataBucket.find { it.idSneaker == item.id }
+                                        if (fav != null) {
+                                            if (bucket != null) {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.delete()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.update()
+                                                    },
+                                                    icon = R.drawable.iconheart,
+                                                    buck = R.drawable.addbutton
+                                                )
+                                                Spacer(Modifier.width(20.dp)) // Отступ между элементами
+                                            } else {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.delete()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert()
+                                                    },
+                                                    icon = R.drawable.iconheart,
+                                                    buck = R.drawable.bucket
+                                                )
+                                                Spacer(Modifier.width(20.dp))
+                                            }
+                                        } else {
+                                            if (bucket != null) {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert2_0()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.update()
+                                                    },
+                                                    icon = R.drawable.icon_heart,
+                                                    buck = R.drawable.addbutton
+                                                )
+                                                Spacer(Modifier.width(20.dp)) // Отступ между элементами
+                                            } else {
+                                                CardSneakers(
+                                                    image = item, onClick = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert2_0()
+                                                    },
+                                                    onBucket = {
+                                                        viewModel.id = item.id
+                                                        viewModel.insert()
+                                                    },
+                                                    icon = R.drawable.icon_heart,
+                                                    buck = R.drawable.bucket
+                                                )
+                                                Spacer(Modifier.width(20.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                                Spacer(Modifier.padding(vertical = 8.dp)) // Отступ между строками
+                            }
                         }
                     }
                 }

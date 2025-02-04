@@ -38,12 +38,10 @@ import com.example.nationfinal.R
 import com.example.nationfinal.Routes
 import com.example.nationfinal.ui.theme.NationFinalTheme
 import com.example.nationfinal.viewmodel.BucketViewModel
-import com.example.nationfinal.viewmodel.CardBucketViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BucketScreen(navController: NavController, viewModel: BucketViewModel = viewModel()) {
-    val viewModel2: CardBucketViewModel = viewModel()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

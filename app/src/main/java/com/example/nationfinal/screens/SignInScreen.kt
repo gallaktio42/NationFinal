@@ -193,7 +193,7 @@ private fun TitleText() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 private fun Preview() {
     NationFinalTheme {

@@ -1,6 +1,5 @@
 package com.example.nationfinal.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -28,26 +27,90 @@ class BucketViewModel() : ViewModel() {
     var id by mutableStateOf<Int?>(null)
 
     init {
+        try {
+            initialize()
+        } catch (e: Exception) {
+            Log.d("Error", "${e.message}")
+        }
+    }
+
+    fun initialize() {
         viewModelScope.launch {
             try {
-                count = getCount()
-                price = getPrice()
-                data = getBucket()
-                dataFavorite = getCountSneaker()
+                val uuid = supabase.auth.retrieveUserForCurrentSession().id
+
+                try {
+                    val countCrocs = supabase.from("Bucket")
+                        .select {
+                            filter {
+                                Bucket::uuid eq uuid
+                            }
+                        }.decodeList<Bucket>()
+                    count = countCrocs.count()
+                    //count = getCount(uuid)
+                } catch (e: Exception) {
+                    Log.d("Error", "${e.message}")
+                }
+
+                try {
+                    val bucket = supabase.from("Bucket")
+                        .select() {
+                            filter {
+                                Bucket::uuid eq uuid
+                            }
+                        }.decodeList<Bucket>()
+                    val bucketIds = bucket.map { it.idSneaker }
+                    val bucketSneaker = mutableListOf<PopularSneakers>()
+                    for (id in bucketIds) {
+                        val crocs = supabase.from("PopularSneakers")
+                            .select {
+                                filter {
+                                    PopularSneakers::id eq id
+                                }
+                            }.decodeList<PopularSneakers>()
+                        bucketSneaker.addAll(crocs)
+                    }
+
+                    var allSneakers = 0.0F
+                    for (item in bucket) {
+                        allSneakers += (item.count.toFloat()) * bucketSneaker.find { it.id == item.idSneaker }!!.price
+                    }
+                    price = allSneakers
+                    //price = getPrice(uuid)
+
+                    data = bucketSneaker
+                    //data = getBucket(uuid)
+                } catch (e: Exception) {
+                    Log.d("Error", "${e.message}")
+                }
+
+                try {
+                    val image = supabase.from("Bucket")
+                        .select() {
+                            filter {
+                                Favorite::uuid eq uuid
+                            }
+                        }
+                        .decodeList<Bucket>()
+                    dataFavorite = image
+                    //dataFavorite = getCountSneaker(uuid)
+                } catch (e: Exception) {
+                    Log.d("Error", "${e.message}")
+                }
                 all = price + 60.20F
             } catch (e: Exception) {
-
+                Log.d("Error", "${e.message}")
             }
         }
     }
 
-    suspend fun getBucket(): List<PopularSneakers> {
+    suspend fun getBucket(uuid: String): List<PopularSneakers> {
         try {
-            val uuid = supabase.auth.retrieveUserForCurrentSession().identities
+            //val uuid = supabase.auth.retrieveUserForCurrentSession().identities
             val bucket = supabase.from("Bucket")
                 .select() {
                     filter {
-                        Bucket::uuid eq uuid?.first()?.userId
+                        Bucket::uuid eq uuid
                     }
                 }.decodeList<Bucket>()
             val bucketIds = bucket.map { it.idSneaker }
@@ -68,13 +131,12 @@ class BucketViewModel() : ViewModel() {
         }
     }
 
-    suspend fun getCount(): Int {
+    suspend fun getCount(uuid: String): Int {
         try {
-            val uuid = supabase.auth.retrieveUserForCurrentSession().identities
             val bucket = supabase.from("Bucket")
                 .select {
                     filter {
-                        Bucket::uuid eq uuid?.first()?.userId
+                        Bucket::uuid eq uuid
                     }
                 }.decodeList<Bucket>()
             return bucket.count()
@@ -83,14 +145,14 @@ class BucketViewModel() : ViewModel() {
         }
     }
 
-    suspend fun getPrice(): Float {
+    suspend fun getPrice(uuid: String): Float {
         try {
-            val bucketSneaker = getBucket()
-            val uuid = supabase.auth.retrieveUserForCurrentSession().identities
+            val bucketSneaker = getBucket(uuid)
+            //val uuid = supabase.auth.retrieveUserForCurrentSession().identities
             val bucket = supabase.from("Bucket")
                 .select() {
                     filter {
-                        Bucket::uuid eq uuid?.first()?.userId
+                        Bucket::uuid eq uuid
                     }
                 }.decodeList<Bucket>()
             var allSneakers = 0.0F
@@ -103,13 +165,13 @@ class BucketViewModel() : ViewModel() {
         }
     }
 
-    suspend fun getCountSneaker(): List<Bucket> {
+    suspend fun getCountSneaker(uuid: String): List<Bucket> {
         try {
-            val uuid = supabase.auth.retrieveUserForCurrentSession().identities
+            //val uuid = supabase.auth.retrieveUserForCurrentSession().identities
             val image = supabase.from("Bucket")
                 .select() {
                     filter {
-                        Favorite::uuid eq uuid?.first()?.userId
+                        Favorite::uuid eq uuid
                     }
                 }
                 .decodeList<Bucket>()
@@ -135,23 +197,26 @@ class BucketViewModel() : ViewModel() {
                                 Bucket::idSneaker eq id
                             }
                         }
+                    try {
+                        initialize()
+                    } catch (e: Exception) {
+                        Log.d("Error", "${e.message}")
+                    }
                 } else {
                     delete()
                 }
             } catch (e: Exception) {
-                throw e
+                Log.d("Error", "${e.message}")
             }
-            price = getPrice()
-            data = getBucket()
-            dataFavorite = getCountSneaker()
-            all = getPrice() + 60.20F
         }
     }
 
     fun insertReverse() {
         viewModelScope.launch {
             try {
-                if (dataFavorite.find { it.idSneaker == id }!!.count > 0) {
+                if (dataFavorite.find { it.idSneaker == id }?.count == 1) {
+                    delete()
+                } else {
                     supabase.from("Bucket")
                         .update(
                             {
@@ -162,16 +227,15 @@ class BucketViewModel() : ViewModel() {
                                 Bucket::idSneaker eq id
                             }
                         }
-                } else {
-                    delete()
+                    try {
+                        initialize()
+                    } catch (e: Exception) {
+                        Log.d("Error", "${e.message}")
+                    }
                 }
             } catch (e: Exception) {
-                throw e
+                Log.d("Error", "${e.message}")
             }
-            price = getPrice()
-            data = getBucket()
-            dataFavorite = getCountSneaker()
-            all = getPrice() + 60.20F
         }
     }
 
@@ -185,13 +249,14 @@ class BucketViewModel() : ViewModel() {
                             Bucket::idSneaker eq id
                         }
                     }
+                try {
+                    initialize()
+                } catch (e: Exception) {
+                    Log.d("Error", "${e.message}")
+                }
             } catch (e: Exception) {
-                throw e
+                Log.d("Error", "${e.message}")
             }
-            price = getPrice()
-            data = getBucket()
-            dataFavorite = getCountSneaker()
-            all = getPrice() + 60.20F
         }
     }
 }

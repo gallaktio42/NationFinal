@@ -72,8 +72,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    //implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }

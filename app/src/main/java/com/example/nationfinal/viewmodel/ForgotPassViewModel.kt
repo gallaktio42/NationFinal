@@ -44,15 +44,12 @@ class ForgotPassViewModel : ViewModel() {
         try {
             val users = supabase.from("SignUpTable").select().decodeList<SignUpTable>()
             val user = users.find { email == it.email }
-            Log.d("MyLog", "$users")
-            Log.d("MyLog", "$user")
             if (user != null) {
                 return true
             }else{
                 return false
             }
         } catch (e: Exception) {
-            e.message?.let { Log.d("MyLog", it) }
             throw e
         }
     }

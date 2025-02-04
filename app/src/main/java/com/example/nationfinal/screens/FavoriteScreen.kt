@@ -1,72 +1,37 @@
 package com.example.nationfinal.screens
 
-import android.annotation.SuppressLint
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.nationfinal.R
 import com.example.nationfinal.Routes
-import com.example.nationfinal.model.Favorite
-import com.example.nationfinal.model.PopularSneakers
 import com.example.nationfinal.ui.theme.NationFinalTheme
-import com.example.nationfinal.viewmodel.CardViewModel
 import com.example.nationfinal.viewmodel.FavoriteViewModel
-import com.example.nationfinal.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel = viewModel()) {
-    val viewModel2: CardViewModel = viewModel()
-    val viewModel3: HomeViewModel = viewModel()
-    val context = LocalContext.current
-    LaunchedEffect(true) {
-        try {
-            viewModel.data = viewModel.getFavoriteSneakers()
-            Log.d("pen", "${viewModel.data}")
-        } catch (e: Exception) {
-            Log.d("MyErorr", "${e.message}")
-            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-        }
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -107,31 +72,31 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel = 
                             .padding(horizontal = 20.dp)
                     ) {
                         pair.forEach { item ->
-                            val bucket = viewModel3.dataBucket.find { it.idSneaker == item.id }
-                            if (bucket!=null) {
+                            val bucket = viewModel.dataBucket.find { it.idSneaker == item.id }
+                            if (bucket != null) {
                                 CardSneakers(
                                     image = item,
                                     onClick = {
-                                        viewModel2.id = item.id
-                                        viewModel2.delete()
+                                        viewModel.id = item.id
+                                        viewModel.delete()
                                     },
                                     onBucket = {
-                                        viewModel2.id = item.id
-                                        viewModel2.update()
+                                        viewModel.id = item.id
+                                        viewModel.update()
                                     },
                                     icon = R.drawable.iconheart,
                                     buck = R.drawable.addbutton
                                 )
-                            }else{
+                            } else {
                                 CardSneakers(
                                     image = item,
                                     onClick = {
-                                        viewModel2.id = item.id
-                                        viewModel2.delete()
+                                        viewModel.id = item.id
+                                        viewModel.delete()
                                     },
                                     onBucket = {
-                                        viewModel2.id = item.id
-                                        viewModel2.insert()
+                                        viewModel.id = item.id
+                                        viewModel.insert()
                                     },
                                     icon = R.drawable.iconheart,
                                     buck = R.drawable.bucket
@@ -142,8 +107,7 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel = 
                     }
                     if (index == viewModel.data.chunked(2).lastIndex) {
                         Spacer(Modifier.padding(vertical = 49.dp))
-                    }
-                    else{
+                    } else {
                         Spacer(Modifier.padding(vertical = 9.dp))
                     }
                 }

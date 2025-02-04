@@ -77,10 +77,14 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                 onQueryChange = {
                     viewModel.text = it
                 },
-                onSearch = {
+                onSearch = { text ->
                     viewModel.active = false
-                    viewModel.filteredData = viewModel.search(it)
-                    viewModel.insert(it)
+                    viewModel.filteredData = viewModel.search(text)
+                    if (viewModel.history.find { it.query == text }?.query != viewModel.text) {
+                        viewModel.insert(text)
+                    } else {
+
+                    }
                 },
                 active = viewModel.active,
                 onActiveChange = {
@@ -120,10 +124,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.addbutton
@@ -133,10 +139,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertBucket()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.bucket
@@ -148,10 +156,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertFav0rite()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.addbutton
@@ -161,10 +171,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertFav0rite()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertBucket()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.bucket
@@ -189,10 +201,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.addbutton
@@ -202,10 +216,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.delete()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertBucket()
                                             },
                                             icon = R.drawable.iconheart,
                                             buck = R.drawable.bucket
@@ -217,10 +233,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertFav0rite()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.update()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.addbutton
@@ -230,10 +248,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = view
                                         CardSneakers(
                                             image = card,
                                             onClick = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertFav0rite()
                                             },
                                             onBucket = {
-
+                                                viewModel.id = card.id
+                                                viewModel.insertBucket()
                                             },
                                             icon = R.drawable.icon_heart,
                                             buck = R.drawable.bucket

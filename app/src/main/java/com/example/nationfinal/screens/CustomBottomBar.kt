@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,6 +51,8 @@ fun CustomBottomBar(navController: NavController) {
         mutableIntStateOf(0)
     }
 
+    val insets = WindowInsets.navigationBars
+
     Scaffold(
         bottomBar = {
             Row(
@@ -56,6 +61,11 @@ fun CustomBottomBar(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
+                    .padding(
+                        bottom = insets
+                            .asPaddingValues()
+                            .calculateBottomPadding()
+                    )
                     .paint(
                         painter = painterResource(R.drawable.vector_1789),
                         contentScale = ContentScale.FillWidth,
@@ -92,7 +102,7 @@ fun CustomBottomBar(navController: NavController) {
                     }
                 }
                 FloatingActionButton(
-                    onClick = { navController.navigate(Routes.Bucket.route)},
+                    onClick = { navController.navigate(Routes.Bucket.route) },
                     Modifier.offset(y = (-25).dp),
                     shape = RoundedCornerShape(55.dp),
                     containerColor = Color(0xFF47ABDE),
@@ -108,7 +118,7 @@ fun CustomBottomBar(navController: NavController) {
                         contentDescription = null
                     )
                 }
-                IconButton(onClick = {})
+                IconButton(onClick = { selectedIndex = 3 })
                 {
                     Icon(
                         Icons.Outlined.PersonOutline,
@@ -132,6 +142,7 @@ private fun ContentScreens(
     when (selectedIndex) {
         0 -> HomeScreen(navController)
         1 -> FavoriteScreen(navController)
+        3 -> ProfileScreen(navController)
     }
 }
 

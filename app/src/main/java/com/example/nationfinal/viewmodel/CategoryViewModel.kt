@@ -1,15 +1,11 @@
 package com.example.nationfinal.viewmodel
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import com.example.nationfinal.Routes
 import com.example.nationfinal.model.Bucket
 import com.example.nationfinal.model.Favorite
 import com.example.nationfinal.model.PopularSneakers
@@ -18,13 +14,11 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class CategoryViewModel : ViewModel() {
 
     var id by mutableStateOf<Int?>(null)
     val category = listOf("All", "Outdoor", "Tennis", "Run", "Tech", "Keckers")
-    var data by mutableStateOf<List<PopularSneakers>>(listOf())
-
-    //var dataAll by mutableStateOf<List<PopularSneakers>>(listOf())
+    var dataAll by mutableStateOf<List<PopularSneakers>>(listOf())
     var dataFavorite by mutableStateOf<List<Favorite>>(listOf())
     var dataBucket by mutableStateOf<List<Bucket>>(listOf())
 
@@ -42,15 +36,11 @@ class HomeViewModel : ViewModel() {
                 val uuid = supabase.auth.retrieveUserForCurrentSession().id
 
                 try {
-                    val image = supabase.from("PopularSneakers")
-                        .select() {
-                            filter {
-                                PopularSneakers::best eq true
-                            }
-                        }
+                    val getData = supabase.from("PopularSneakers")
+                        .select()
                         .decodeList<PopularSneakers>()
-                    data = image
-                    //data = getDataPopular()
+                    dataAll = getData
+                    //dataAll = getData()
                 } catch (e: Exception) {
                     Log.d("Error", "${e.message}")
                 }
@@ -104,21 +94,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun signOut(context: Context, navController: NavController) {
-        viewModelScope.launch {
-            try {
-                supabase.auth.signOut()
-                navController.navigate(Routes.SignIn.route) {
-                    popUpTo(Routes.SignIn.route) {
-                        inclusive = true
-                    }
-                }
-            } catch (e: Exception) {
-                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     suspend fun getData(): List<PopularSneakers> {
         try {
             val image = supabase.from("PopularSneakers")
@@ -146,21 +121,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    suspend fun getDataPopular(): List<PopularSneakers> {
-        try {
-            val image = supabase.from("PopularSneakers")
-                .select() {
-                    filter {
-                        PopularSneakers::best eq true
-                    }
-                }
-                .decodeList<PopularSneakers>()
-            return image
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
     fun insert2_0() {
         viewModelScope.launch {
             try {
@@ -168,7 +128,7 @@ class HomeViewModel : ViewModel() {
                     .insert(Favorite(idSneaker = id!!))
                 try {
                     initialize()
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Log.d("Error", "${e.message}")
                 }
             } catch (e: Exception) {
@@ -188,7 +148,7 @@ class HomeViewModel : ViewModel() {
                     }
                 try {
                     initialize()
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Log.d("Error", "${e.message}")
                 }
             } catch (e: Exception) {
@@ -230,7 +190,7 @@ class HomeViewModel : ViewModel() {
                         }
                     try {
                         initialize()
-                    } catch (e: Exception) {
+                    }catch (e: Exception){
                         Log.d("Error", "${e.message}")
                     }
                 } else {
