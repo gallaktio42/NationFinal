@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,10 +26,14 @@ class ProfileViewModel : ViewModel() {
     var number by mutableStateOf("")
     var code by mutableStateOf("")
     var scan by mutableStateOf(false)
+    var barcode by mutableStateOf(false)
+    var originalBrightness by mutableIntStateOf(0)
+    lateinit var context: Context
 
     init {
         try {
             initialize()
+            originalBrightness = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
         } catch (e: Exception) {
             Log.d("Error", "${e.message}")
         }
@@ -48,6 +53,43 @@ class ProfileViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.d("Error", "${e.message}")
             }
+        }
+    }
+
+    fun verifyPermission(context: Context, activate: Boolean, originalBright: Int) {
+        if (Settings.System.canWrite(context)) {
+            toggleBrightness(context, activate, originalBright)
+        } else {
+            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            intent.data = Uri.parse("package:${context.packageName}")
+            context.startActivity(intent)
+        }
+    }
+
+
+    fun toggleBrightness(context: Context, activate: Boolean, originalBright: Int) {
+        if (activate) {
+            Settings.System.putInt(
+                context.contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+            )
+            Settings.System.putInt(
+                context.contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS,
+                204
+            )
+        } else {
+            Settings.System.putInt(
+                context.contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+            )
+            Settings.System.putInt(
+                context.contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS,
+                originalBright
+            )
         }
     }
 }

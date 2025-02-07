@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.nationfinal.screens.BottomBarScreens
 import com.example.nationfinal.screens.BucketScreen
 import com.example.nationfinal.screens.CategoryScreen
 import com.example.nationfinal.screens.CustomBottomBar
@@ -63,4 +64,5 @@ sealed class Routes(val route: String) {
     object Category : Routes("category")
     object Bucket : Routes("bucket")
     object Search : Routes("search")
+    object Test : Routes("test")
 }

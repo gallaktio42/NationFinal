@@ -62,17 +62,16 @@ import com.simonsickle.compose.barcodes.BarcodeType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = viewModel()) {
-    var barcode by remember { mutableStateOf(false) }
-    var originalBrightness by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
-    LaunchedEffect(true) {
+   /* LaunchedEffect(true) {
         try {
             originalBrightness =
                 Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
         } catch (e: Exception) {
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
         }
-    }
+    }*/
+    viewModel.context = context
     if (viewModel.scan) {
         Scaffold(
             topBar = {
@@ -87,22 +86,21 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                                 .size(44.dp)
                                 .clickable {
                                     viewModel.scan = !viewModel.scan
-                                })
+                                    viewModel.barcode = !viewModel.barcode
+                                    viewModel.verifyPermission(
+                                        context = context,
+                                        viewModel.barcode,
+                                        viewModel.originalBrightness
+                                    )
+                                }
+                        )
                     },
                 )
             },
         ) {
             Column(
                 Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        barcode = !barcode
-                        verifyPermission(
-                            context = context,
-                            barcode,
-                            originalBrightness
-                        )
-                    },
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -166,7 +164,15 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                     Card(
                         Modifier
                             .fillMaxWidth()
-                            .clickable { viewModel.scan = !viewModel.scan }
+                            .clickable {
+                                viewModel.scan = !viewModel.scan
+                                viewModel.barcode = !viewModel.barcode
+                                viewModel.verifyPermission(
+                                    context = context,
+                                    viewModel.barcode,
+                                    viewModel.originalBrightness
+                                )
+                            }
                             .height(65.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFEDEDEF)
@@ -189,6 +195,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                                     Modifier
                                         .height(50.dp)
                                         .height(150.dp),
+                                    showProgress = false,
                                     type = BarcodeType.CODE_128,
                                     value = viewModel.code
                                 )
@@ -268,48 +275,6 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
         }
     }
 }
-
-fun verifyPermission(context: Context, activate: Boolean, originalBright: Int) {
-    if (Settings.System.canWrite(context)) {
-        Settings.System.putInt(
-            context.contentResolver,
-            Settings.System.SCREEN_BRIGHTNESS,
-            100
-        )
-    } else {
-        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-        intent.data = Uri.parse("package: ${context.packageName}")
-        context.startActivity(intent)
-    }
-}
-
-
-fun toggleBrightness(context: Context, activate: Boolean, originalBright: Int) {
-    if (activate) {
-        Settings.System.putInt(
-            context.contentResolver,
-            Settings.System.SCREEN_BRIGHTNESS_MODE,
-            Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
-        )
-        Settings.System.putInt(
-            context.contentResolver,
-            Settings.System.SCREEN_BRIGHTNESS,
-            204
-        )
-    } else {
-        Settings.System.putInt(
-            context.contentResolver,
-            Settings.System.SCREEN_BRIGHTNESS_MODE,
-            Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
-        )
-        Settings.System.putInt(
-            context.contentResolver,
-            Settings.System.SCREEN_BRIGHTNESS,
-            originalBright
-        )
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
