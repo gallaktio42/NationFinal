@@ -1,7 +1,12 @@
 package com.example.nationfinal.viewmodel
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -13,30 +18,34 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.launch
 
-class ProfileViewModel: ViewModel() {
+class ProfileViewModel : ViewModel() {
     var name by mutableStateOf("")
     var surname by mutableStateOf("")
     var address by mutableStateOf("")
     var number by mutableStateOf("")
+    var code by mutableStateOf("")
+    var scan by mutableStateOf(false)
 
     init {
         try {
             initialize()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.d("Error", "${e.message}")
         }
     }
-    fun initialize(){
+
+    fun initialize() {
         viewModelScope.launch {
             try {
                 val uuid = supabase.auth.retrieveUserForCurrentSession().id
-                val getName = supabase.from("SignUpTable").select(){
+                code = uuid
+                val getName = supabase.from("SignUpTable").select() {
                     filter {
                         SignUpTable::id eq uuid
                     }
                 }.decodeSingle<SignUpTable>()
                 name = getName.name
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d("Error", "${e.message}")
             }
         }

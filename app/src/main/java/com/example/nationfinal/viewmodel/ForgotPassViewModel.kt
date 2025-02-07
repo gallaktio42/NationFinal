@@ -19,9 +19,13 @@ class ForgotPassViewModel : ViewModel() {
     var email by mutableStateOf("")
     var alert by mutableStateOf(false)
 
-    init{
+    init {
         viewModelScope.launch {
-            getUsers()
+            try {
+                getUsers()
+            } catch (e: Exception) {
+                Log.d("Error", "${e.message}")
+            }
         }
     }
 
@@ -46,10 +50,11 @@ class ForgotPassViewModel : ViewModel() {
             val user = users.find { email == it.email }
             if (user != null) {
                 return true
-            }else{
+            } else {
                 return false
             }
         } catch (e: Exception) {
+            Log.d("Error", "${e.message}")
             throw e
         }
     }
