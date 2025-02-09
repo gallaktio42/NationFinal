@@ -10,5 +10,4 @@ data class PopularSneakers(
     val price: Float,
     val image: String,
     val category: String,
-    val isFav: Boolean
 )
