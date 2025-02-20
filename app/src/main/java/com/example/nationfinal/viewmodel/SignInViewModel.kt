@@ -19,24 +19,65 @@ class SignInViewModel : ViewModel() {
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
-    fun signIn(userEmail: String, userPass: String, context: Context, navController: NavController) {
+    var error by mutableStateOf("")
+    var alert by mutableStateOf(false)
+
+    fun isValidPassword(password: String): Boolean {
+        val valid = password.length >= 6
+        return valid
+    }
+
+    fun isValidEmail(email: String): Boolean{
+        val regex = Regex("^[a-z0-9]{4,}+@[a-z0-9]{2,}+\\.[a-z]{2,}$")
+        return regex.matches(email)
+    }
+
+    fun typeOfError(): String {
+        if (password.isEmpty() && email.isEmpty()) {
+            error = "Пустые поля"
+            return error
+        } else if (password.isEmpty()) {
+            error = "Заполните пароль"
+            return error
+        } else if (email.isEmpty()) {
+            error = "Заполните почту"
+            return error
+        } else if (!isValidPassword(password)) {
+            error = "Введите корректный пароль"
+            return error
+        } else if (!isValidEmail(email)) {
+            error = "Введите корректную почту"
+            return error
+        } else {
+            error = "Некорректные данные"
+            return error
+        }
+    }
+
+    fun signIn(
+        userEmail: String,
+        userPass: String,
+        context: Context,
+        navController: NavController
+    ) {
         viewModelScope.launch {
             try {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
+                if (email.isNotEmpty() && password.isNotEmpty() && isValidPassword(userPass) && isValidEmail(userEmail)) {
                     supabase.auth.signInWith(Email) {
                         email = userEmail
                         password = userPass
                     }
-                    navController.navigate(Routes.Home.route){
-                        popUpTo(Routes.Home.route){
+                    navController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.Home.route) {
                             inclusive = true
                         }
                     }
                 } else {
-                    Toast.makeText(context, "Заполни поля", Toast.LENGTH_LONG).show()
+                    alert = true
                 }
             } catch (e: Exception) {
                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                alert = true
             }
         }
     }

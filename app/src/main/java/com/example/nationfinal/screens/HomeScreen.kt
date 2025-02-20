@@ -17,14 +17,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.DeliveryDining
+import androidx.compose.material.icons.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +71,8 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                 navigationIcon = {
                     Image(
                         painterResource(R.drawable.hamburger),
-                        contentDescription = "hamburger"
+                        contentDescription = "hamburger",
+                        Modifier.clickable { navController.navigate(Routes.Menu.route) }
                     )
                 },
                 actions = {
@@ -265,15 +279,15 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                 CardSale()
             }
             /*LazyColumn {
-            items(1) {
-                RowCard()
-            }
+        items(1) {
+            RowCard()
         }
-        Text("Home")
-        Button(
-            onClick = { viewModel.signOut(context, navController) },
-        )
-        { Text("Log Out") }*/
+    }
+    Text("Home")
+    Button(
+        onClick = { viewModel.signOut(context, navController) },
+    )
+    { Text("Log Out") }*/
         }
     }
 }

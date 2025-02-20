@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
@@ -52,18 +55,27 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
             .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 55.dp),
         verticalArrangement = Arrangement.spacedBy(45.dp),
-
-        ) {
+    ) {
+        if (viewModel.alert) {
+            PopUp(
+                exitClick = {
+                    viewModel.alert = !viewModel.alert
+                },
+                error = viewModel.typeOfError()
+            )
+        }
         Image(
             painterResource(R.drawable.icon_png_4x),
             contentDescription = "back",
-            Modifier.size(44.dp).clickable(onClick = {
-                navController.navigate(Routes.Onboarding.route) {
-                    popUpTo(Routes.Onboarding.route){
-                        inclusive = true
+            Modifier
+                .size(44.dp)
+                .clickable(onClick = {
+                    navController.navigate(Routes.Onboarding.route) {
+                        popUpTo(Routes.Onboarding.route) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                })
         )
         TitleText()
         Column(Modifier.fillMaxWidth()) {
@@ -75,6 +87,7 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
                 placeholder = {
                     Text("xyz@gmail.com", color = Color.Black.copy(0.4f))
                 },
+                isError = if (viewModel.isValidEmail(viewModel.email) || viewModel.email.isEmpty()) false else true,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFFEDEDEF),
@@ -117,6 +130,7 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
                         }
                     }
                 },
+                isError = if (viewModel.isValidPassword(viewModel.password) || viewModel.password.isEmpty()) false else true,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFFEDEDEF),
@@ -130,17 +144,26 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(
-                    onClick = {navController.navigate(Routes.ForgotPass.route){
-                        popUpTo(Routes.ForgotPass.route){
-                            inclusive = true
+                    onClick = {
+                        navController.navigate(Routes.ForgotPass.route) {
+                            popUpTo(Routes.ForgotPass.route) {
+                                inclusive = true
+                            }
                         }
-                    } }
+                    }
                 ) {
                     Text("Восстановить", color = Color.Black.copy(0.3f))
                 }
             }
             Spacer(Modifier.height(19.dp))
-            Buttons(onClick = { viewModel.signIn(viewModel.email, viewModel.password, context, navController) })
+            Buttons(onClick = {
+                viewModel.signIn(
+                    viewModel.email,
+                    viewModel.password,
+                    context,
+                    navController
+                )
+            })
         }
         Row(
             Modifier.fillMaxSize(),
@@ -151,7 +174,7 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
             Spacer(Modifier.width(3.dp))
             Text("Создать пользователя", Modifier.clickable(onClick = {
                 navController.navigate(Routes.SignUp.route) {
-                    popUpTo(Routes.SignUp.route){
+                    popUpTo(Routes.SignUp.route) {
                         inclusive = true
                     }
                 }
@@ -160,6 +183,53 @@ fun SignInScreen(viewModel: SignInViewModel = viewModel(), navController: NavCon
     }
 }
 
+@Composable
+private fun PopUp(exitClick: () -> Unit, error: String) {
+    AlertDialog(
+        onDismissRequest = {},
+        buttons = {
+        },
+        Modifier
+            .width(335.dp)
+            .height(200.dp),
+        title = {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    Icons.Filled.Cancel,
+                    contentDescription = null,
+                    Modifier.size(33.dp),
+                    tint = Color.Red
+                )
+            }
+        },
+        text = {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(error)
+                Spacer(Modifier.height(25.dp))
+                Divider(Modifier.fillMaxWidth())
+                Spacer(Modifier.height(15.dp))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { exitClick() },
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Закрыть", color = Color(0XFF48B2e7))
+                }
+            }
+        },
+        shape = RoundedCornerShape(16.dp)
+    )
+}
 
 @Composable
 private fun Buttons(onClick: () -> Unit) {

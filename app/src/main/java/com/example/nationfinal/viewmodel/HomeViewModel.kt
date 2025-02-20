@@ -13,6 +13,7 @@ import com.example.nationfinal.Routes
 import com.example.nationfinal.model.Bucket
 import com.example.nationfinal.model.Favorite
 import com.example.nationfinal.model.PopularSneakers
+import com.example.nationfinal.model.SignUpTable
 import com.example.nationfinal.utils.SupabaseClient.supabase
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -27,6 +28,7 @@ class HomeViewModel : ViewModel() {
     //var dataAll by mutableStateOf<List<PopularSneakers>>(listOf())
     var dataFavorite by mutableStateOf<List<Favorite>>(listOf())
     var dataBucket by mutableStateOf<List<Bucket>>(listOf())
+    var nam by mutableStateOf("")
 
     init {
         try {
@@ -82,6 +84,19 @@ class HomeViewModel : ViewModel() {
                 } catch (e: Exception) {
                     Log.d("Error", "${e.message}")
                 }
+
+                try {
+                    val name = supabase.from("SignUpTable")
+                        .select {
+                            filter {
+                                SignUpTable::id eq uuid
+                            }
+                        }.decodeSingle<SignUpTable>()
+                    nam = name.name
+                }catch (e: Exception){
+                    Log.d("Error", "${e.message}")
+                }
+
             } catch (e: Exception) {
                 Log.d("Error", "${e.message}")
             }

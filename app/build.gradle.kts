@@ -58,11 +58,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    //material(bugging with material3)
+    //material
     implementation("androidx.compose.material:material:1.8.0-alpha04")
     //PDF viewer
     implementation("io.github.grizzi91:bouquet:1.1.2")
-
     //icons
     implementation("androidx.compose.material:material-icons-extended")
     //viewmodel
@@ -71,18 +70,19 @@ dependencies {
     implementation(platform("io.github.jan-tennert.supabase:bom:3.0.2"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt:3.0.2")
     implementation("io.github.jan-tennert.supabase:auth-kt:3.0.2")
+    implementation("io.github.jan-tennert.supabase:storage-kt:3.0.2")
     implementation("io.ktor:ktor-client-cio:3.0.1")
-
     //navigation
-    implementation(libs.androidx.navigation.runtime.ktx)
+    //implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-
+    //image
     implementation("io.coil-kt:coil-compose:2.6.0")
     //implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
 
     //serializer
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
     //barcode
     implementation("com.simonsickle:composed-barcodes:1.3.0")
+    //splashscreen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }
